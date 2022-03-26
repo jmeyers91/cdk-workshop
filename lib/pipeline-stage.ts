@@ -6,6 +6,6 @@ export class WorkshopPipelineStage extends Stage {
   constructor(scope: Construct, id: string, props?: StageProps) {
     super(scope, id, props);
 
-    new CdkWorkshopStack(scope, id, props);
+    new CdkWorkshopStack(scope, "WebService");
   }
 }
