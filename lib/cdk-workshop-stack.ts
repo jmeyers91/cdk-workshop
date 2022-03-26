@@ -1,12 +1,12 @@
-import { Stack, StackProps } from "aws-cdk-lib";
-import { Construct } from "constructs";
+import * as cdk from "aws-cdk-lib";
 import * as lambda from "aws-cdk-lib/aws-lambda";
 import * as apigw from "aws-cdk-lib/aws-apigateway";
+import { Construct } from "constructs";
 import { TableViewer } from "cdk-dynamo-table-viewer";
 import { HitCounter } from "./hitcounter";
 
-export class CdkWorkshopStack extends Stack {
-  constructor(scope: Construct, id: string, props?: StackProps) {
+export class CdkWorkshopStack extends cdk.Stack {
+  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
     const helloLambda = new lambda.Function(this, "HelloHandler", {
