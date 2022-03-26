@@ -68,3 +68,28 @@ test("Lambda has env vars", () => {
     },
   });
 });
+
+test("DynamoDB table read capacity validation", () => {
+  expect(() => {
+    const stack = new cdk.Stack();
+    return new HitCounter(stack, "MyTestConstruct", {
+      readCapacity: 4,
+      downstream: new lambda.Function(stack, "TestFunction", {
+        runtime: lambda.Runtime.NODEJS_14_X,
+        handler: "hello.handler",
+        code: lambda.Code.fromAsset("lambda"),
+      }),
+    });
+  }).toThrowError(/readCapacity must be between 5 and 20/);
+  expect(() => {
+    const stack = new cdk.Stack();
+    return new HitCounter(stack, "MyTestConstruct", {
+      readCapacity: 21,
+      downstream: new lambda.Function(stack, "TestFunction", {
+        runtime: lambda.Runtime.NODEJS_14_X,
+        handler: "hello.handler",
+        code: lambda.Code.fromAsset("lambda"),
+      }),
+    });
+  }).toThrowError(/readCapacity must be between 5 and 20/);
+});
