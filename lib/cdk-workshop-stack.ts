@@ -5,7 +5,14 @@ import { Construct } from "constructs";
 import { TableViewer } from "cdk-dynamo-table-viewer";
 import { HitCounter } from "./hitcounter";
 
+export interface CdkWorkshopStackOutput {
+  gatewayUrl: cdk.CfnOutput;
+  tableViewerUrl: cdk.CfnOutput;
+}
+
 export class CdkWorkshopStack extends cdk.Stack {
+  public readonly output: CdkWorkshopStackOutput;
+
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
@@ -26,7 +33,7 @@ export class CdkWorkshopStack extends cdk.Stack {
      * Makes the hit counter lambda publicly accessable.
      * The URL will be available in the CLI outputs after running `cdk deploy`.
      */
-    new apigw.LambdaRestApi(this, "Endpoint", {
+    const lambdaGateway = new apigw.LambdaRestApi(this, "Endpoint", {
       handler: helloWithCounter.handler,
     });
 
@@ -35,10 +42,20 @@ export class CdkWorkshopStack extends cdk.Stack {
      * The page is publicly accessable and not meant for production use.
      * The URL will be available in the CLI outputs after running `cdk deploy`.
      */
-    new TableViewer(this, "ViewHitCounter", {
+    const tableViewer = new TableViewer(this, "ViewHitCounter", {
       title: "Hello Hits",
       table: helloWithCounter.table,
       sortBy: "-hits",
     });
+
+    this.output = {
+      gatewayUrl: new cdk.CfnOutput(this, "gatewayUrl", {
+        value: lambdaGateway.url,
+      }),
+
+      tableViewerUrl: new cdk.CfnOutput(this, "TableViewerUrl", {
+        value: tableViewer.endpoint,
+      }),
+    };
   }
 }
