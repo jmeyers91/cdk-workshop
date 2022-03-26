@@ -1,5 +1,4 @@
 import * as cdk from "aws-cdk-lib";
-import * as codecommit from "aws-cdk-lib/aws-codecommit";
 import {
   CodeBuildStep,
   CodePipeline,
@@ -18,8 +17,8 @@ export class WorkshopPipelineStack extends cdk.Stack {
         input: CodePipelineSource.gitHub("jmeyers91/cdk-workshop", "main", {
           authentication: cdk.SecretValue.secretsManager("github-token"),
         }),
-        installCommands: ["npm install -g aws-cdk"],
-        commands: ["npm ci", "npm run build", "npx cdk synth"],
+        installCommands: ["npm install -g aws-cdk", "npm ci"],
+        commands: ["./build.sh"],
       }),
     });
 
